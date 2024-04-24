@@ -1,5 +1,6 @@
 package com.ecommerce.Inventory.controller;
 
+import com.ecommerce.Inventory.dto.ProductAddDTO;
 import com.ecommerce.Inventory.model.Product;
 import com.ecommerce.Inventory.service.ProductService;
 import com.ecommerce.Inventory.service.ProductServiceIml;
@@ -22,8 +23,8 @@ public class ProductController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Product> addProducts(Product product){
-        return ResponseEntity.ok().body(productService.addProducts(product));
+    public ResponseEntity<ProductAddDTO> addProducts(ProductAddDTO productAddDTO){
+        return ResponseEntity.ok().body(productService.addProducts(productAddDTO));
     }
 
     @DeleteMapping("/delete/{id}")
