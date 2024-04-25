@@ -1,6 +1,6 @@
 package com.ecommerce.Inventory.service;
 
-import com.ecommerce.Inventory.dto.ProductAddDTO;
+import com.ecommerce.Inventory.dto.ProductDTO;
 import com.ecommerce.Inventory.model.Product;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -22,10 +22,10 @@ public class ProductServiceImpl implements  ProductService{
     private ModelMapper modelMapper;
 
     @Override
-    public ProductAddDTO addProducts(ProductAddDTO productAddDTO) {
-        Product product = modelMapper.map(productAddDTO, Product.class);
+    public ProductDTO addProducts(ProductDTO productDTO) {
+        Product product = modelMapper.map(productDTO, Product.class);
         Product saveProduct = productRepository.save(product);
-        return  modelMapper.map(saveProduct, ProductAddDTO.class);
+        return  modelMapper.map(saveProduct, ProductDTO.class);
     }
 
     @Override

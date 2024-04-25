@@ -1,4 +1,4 @@
-package com.ecommerce.Inventory.model;
+package com.ecommerce.Order.model;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;
@@ -6,11 +6,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
 
-@Document
 @Data
-public class Cart {
+@Document
+public class Order {
     @Id
     private  String id;
-    private  Product product;
-    private  Date timeStamp =  new Date();
+    private  String orderStatus;
+    private Date timeStamp = new Date();
 }
