@@ -1,11 +1,10 @@
 package com.ecommerce.Inventory.controller;
 
+import com.ecommerce.Inventory.dto.AddToCartDTO;
 import com.ecommerce.Inventory.dto.ProductAddDTO;
-import com.ecommerce.Inventory.model.Cart;
 import com.ecommerce.Inventory.model.Product;
 import com.ecommerce.Inventory.service.CartService;
 import com.ecommerce.Inventory.service.ProductService;
-import com.ecommerce.Inventory.service.ProductServiceIml;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,13 +37,18 @@ public class ProductController {
         return ResponseEntity.ok().body("Product with id " + id + "deleted");
     }
     @PostMapping("/add-to-cart")
-    public ResponseEntity<Cart> addToCart (Cart cart){
-        return ResponseEntity.ok().body(cartService.addToCart(cart));
+    public ResponseEntity<AddToCartDTO> addToCart (AddToCartDTO addToCartDTO){
+        return ResponseEntity.ok().body(cartService.addToCart(addToCartDTO));
     }
     @DeleteMapping("/delete-Cart/{id})")
     public  ResponseEntity<String> deleteCartById (@PathVariable("id") String id){
         cartService.deleteCartById(id);
         return ResponseEntity.ok().body("Cart with id : " + id  + "is deleted");
+    }
+    @PostMapping("/place-order/{id}")
+        public ResponseEntity<String> placeOrder(@PathVariable("id") String id){
+        cartService.PlaceOrder(id);
+        return  ResponseEntity.ok().body("Processing the order");
     }
 
 }

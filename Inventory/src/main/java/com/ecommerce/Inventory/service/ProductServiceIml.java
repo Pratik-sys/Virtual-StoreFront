@@ -5,7 +5,6 @@ import com.ecommerce.Inventory.model.Product;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import repository.ProductRepository;
-
 import java.util.List;
 
 public class ProductServiceIml implements  ProductService{

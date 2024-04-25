@@ -1,8 +1,9 @@
 package com.ecommerce.Inventory.service;
 
-import com.ecommerce.Inventory.model.Cart;
+import com.ecommerce.Inventory.dto.AddToCartDTO;
 
 public interface CartService {
-    Cart addToCart(Cart cart);
+    AddToCartDTO addToCart(AddToCartDTO addToCartDTO);
     void deleteCartById(String id);
+    void PlaceOrder(String id);
 }
