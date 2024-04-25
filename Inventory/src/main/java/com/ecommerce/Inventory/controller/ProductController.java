@@ -1,11 +1,10 @@
 package com.ecommerce.Inventory.controller;
 
-import com.ecommerce.Inventory.dto.ProductDTO;
-import com.ecommerce.Inventory.model.Product;
+import com.ecommerce.Inventory.dto.ProductRequest;
+import com.ecommerce.Inventory.dto.ProductResponse;
 import com.ecommerce.Inventory.service.ProductService;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,20 +13,21 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/product/")
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 public class ProductController {
 
     @Autowired
     private ProductService productService;
 
     @GetMapping("/list-all")
-    public ResponseEntity<List<Product>> listAllProducts(){
+    public ResponseEntity<List<ProductResponse>> listAllProducts(){
         return ResponseEntity.ok().body(productService.listAllProducts());
     }
 
     @PostMapping("/add")
-    public ResponseEntity<ProductDTO> addProducts(@RequestBody ProductDTO productDTO){
-        return ResponseEntity.ok().body(productService.addProducts(productDTO));
+    public ResponseEntity<ProductRequest> addProducts(@RequestBody ProductRequest productRequest){
+        return ResponseEntity.ok().body(productService.addProducts(productRequest));
     }
 
     @DeleteMapping("/delete/{id}")

@@ -1,11 +1,15 @@
 package com.ecommerce.Inventory.dto;
 
-import lombok.Data;
+import lombok.*;
+
 import java.math.BigDecimal;
 
 @Data
-public class ProductDTO {
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class ProductRequest {
         private  String name;
         private BigDecimal price;
-        private  int quantity;
+        private String description;
     }

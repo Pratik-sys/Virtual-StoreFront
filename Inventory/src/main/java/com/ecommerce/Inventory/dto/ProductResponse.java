@@ -1,18 +1,14 @@
-package com.ecommerce.Inventory.model;
+package com.ecommerce.Inventory.dto;
 
 import lombok.*;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
 
-@Document
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Product {
-    @Id
+public class ProductResponse {
     private  String id;
     private  String name;
     private BigDecimal price;

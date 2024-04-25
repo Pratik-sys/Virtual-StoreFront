@@ -1,11 +1,12 @@
 package com.ecommerce.Inventory.service;
 
-import com.ecommerce.Inventory.dto.ProductDTO;
-import com.ecommerce.Inventory.model.Product;
+import com.ecommerce.Inventory.dto.ProductRequest;
+import com.ecommerce.Inventory.dto.ProductResponse;
+
 import java.util.List;
 
 public interface ProductService {
-    ProductDTO addProducts(ProductDTO productDTO);
-    List<Product> listAllProducts();
+    ProductRequest addProducts(ProductRequest productRequest);
+    List<ProductResponse> listAllProducts();
     void deleteProductById(String id);
 }
