@@ -12,5 +12,5 @@ public class Cart {
     @Id
     private  String id;
     private  Product product;
-    private final Date timeStamp =  new Date();
+    private  Date timeStamp =  new Date();
 }

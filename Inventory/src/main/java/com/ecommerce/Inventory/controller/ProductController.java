@@ -5,6 +5,8 @@ import com.ecommerce.Inventory.dto.ProductAddDTO;
 import com.ecommerce.Inventory.model.Product;
 import com.ecommerce.Inventory.service.CartService;
 import com.ecommerce.Inventory.service.ProductService;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +15,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/product/")
+@AllArgsConstructor
+@NoArgsConstructor
 public class ProductController {
 
     @Autowired
@@ -27,7 +31,7 @@ public class ProductController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<ProductAddDTO> addProducts(ProductAddDTO productAddDTO){
+    public ResponseEntity<ProductAddDTO> addProducts(@RequestBody ProductAddDTO productAddDTO){
         return ResponseEntity.ok().body(productService.addProducts(productAddDTO));
     }
 
@@ -36,9 +40,9 @@ public class ProductController {
         productService.deleteProductById(id);
         return ResponseEntity.ok().body("Product with id " + id + "deleted");
     }
-    @PostMapping("/add-to-cart")
-    public ResponseEntity<AddToCartDTO> addToCart (AddToCartDTO addToCartDTO){
-        return ResponseEntity.ok().body(cartService.addToCart(addToCartDTO));
+    @PostMapping("/add-to-cart/{pid}")
+    public ResponseEntity<AddToCartDTO> addToCart (@PathVariable("pid") String pid){
+        return ResponseEntity.ok().body(cartService.addToCart(pid));
     }
     @DeleteMapping("/delete-Cart/{id})")
     public  ResponseEntity<String> deleteCartById (@PathVariable("id") String id){

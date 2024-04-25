@@ -1,4 +1,4 @@
-package repository;
+package com.ecommerce.Inventory.repository;
 
 import com.ecommerce.Inventory.model.Product;
 import org.springframework.data.mongodb.repository.MongoRepository;

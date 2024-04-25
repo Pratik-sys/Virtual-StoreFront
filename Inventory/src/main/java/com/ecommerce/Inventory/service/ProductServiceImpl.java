@@ -2,16 +2,22 @@ package com.ecommerce.Inventory.service;
 
 import com.ecommerce.Inventory.dto.ProductAddDTO;
 import com.ecommerce.Inventory.model.Product;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import repository.ProductRepository;
+import org.springframework.stereotype.Service;
+import com.ecommerce.Inventory.repository.ProductRepository;
+
 import java.util.List;
 
-public class ProductServiceIml implements  ProductService{
+@Service
+@AllArgsConstructor
+@NoArgsConstructor
+public class ProductServiceImpl implements  ProductService{
 
     @Autowired
     private ProductRepository productRepository;
-
     @Autowired
     private ModelMapper modelMapper;
 

@@ -8,5 +8,5 @@ import java.util.Date;
 public class AddToCartDTO {
     private  String id;
     private Product product;
-    private final Date timeStamp =  new Date();
+    private  Date timeStamp =  new Date();
 }
