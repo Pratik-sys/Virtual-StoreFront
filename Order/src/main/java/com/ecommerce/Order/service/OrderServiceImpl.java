@@ -1,6 +1,9 @@
 package com.ecommerce.Order.service;
 
+import com.ecommerce.Order.dto.OrderListDTO;
+import com.ecommerce.Order.dto.OrderRequest;
 import com.ecommerce.Order.model.Order;
+import com.ecommerce.Order.model.OrderListItems;
 import com.ecommerce.Order.repository.OrderRepository;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -18,17 +21,22 @@ public class OrderServiceImpl implements OrderService {
     private OrderRepository orderRepository;
 
     @Override
-    public void deleteOrderByID(String id) {
-
+    public String placeOrder(OrderRequest orderRequest) {
+        Order order = new Order();
+        List<OrderListItems> orderListItems = orderRequest.getOrderListDTOS().stream().map(
+                this:: mapToDto
+        ).toList();
+        order.setOrderListItems(orderListItems);
+        orderRepository.save(order);
+        return"order placed";
     }
 
-    @Override
-    public void confirmOrder() {
+    private OrderListItems mapToDto(OrderListDTO orderListDTO) {
+        OrderListItems orderListItems = new OrderListItems();
+        orderListItems.setP_id(orderListDTO.getP_id());
+        orderListItems.setPrice(orderListDTO.getPrice());
+        orderListItems.setQuantity((orderListDTO.getQuantity()));
+        return orderListItems;
 
-    }
-
-    @Override
-    public List<Order> listAllOrders() {
-        return List.of();
     }
 }
