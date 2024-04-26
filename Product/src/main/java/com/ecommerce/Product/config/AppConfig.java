@@ -1,4 +1,4 @@
-package com.ecommerce.Inventory.config;
+package com.ecommerce.Product.config;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;

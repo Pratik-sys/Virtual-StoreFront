@@ -1,8 +1,8 @@
-package com.ecommerce.Inventory.controller;
+package com.ecommerce.Product.controller;
 
-import com.ecommerce.Inventory.dto.ProductRequest;
-import com.ecommerce.Inventory.dto.ProductResponse;
-import com.ecommerce.Inventory.service.ProductService;
+import com.ecommerce.Product.dto.ProductRequest;
+import com.ecommerce.Product.dto.ProductResponse;
+import com.ecommerce.Product.service.ProductService;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,7 +1,7 @@
-package com.ecommerce.Inventory.service;
+package com.ecommerce.Product.service;
 
-import com.ecommerce.Inventory.dto.ProductRequest;
-import com.ecommerce.Inventory.dto.ProductResponse;
+import com.ecommerce.Product.dto.ProductRequest;
+import com.ecommerce.Product.dto.ProductResponse;
 
 import java.util.List;
 

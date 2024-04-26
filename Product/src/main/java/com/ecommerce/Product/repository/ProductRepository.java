@@ -1,6 +1,6 @@
-package com.ecommerce.Inventory.repository;
+package com.ecommerce.Product.repository;
 
-import com.ecommerce.Inventory.model.Product;
+import com.ecommerce.Product.model.Product;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,15 +1,15 @@
-package com.ecommerce.Inventory.service;
+package com.ecommerce.Product.service;
 
-import com.ecommerce.Inventory.dto.ProductRequest;
-import com.ecommerce.Inventory.dto.ProductResponse;
-import com.ecommerce.Inventory.model.Product;
+import com.ecommerce.Product.dto.ProductRequest;
+import com.ecommerce.Product.dto.ProductResponse;
+import com.ecommerce.Product.model.Product;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.ecommerce.Inventory.repository.ProductRepository;
+import com.ecommerce.Product.repository.ProductRepository;
 
 import java.util.List;
 

@@ -58,7 +58,7 @@
 		</dependency>
         <dependency>
             <groupId>com.ecommerce</groupId>
-            <artifactId>Inventory</artifactId>
+            <artifactId>Product</artifactId>
             <version>0.0.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>

@@ -31,4 +31,4 @@ build/
 
 ### VS Code ###
 .vscode/
-/src/main/java/com/ecommerce/Inventory/.env
+/src/main/java/com/ecommerce/Product/.env
