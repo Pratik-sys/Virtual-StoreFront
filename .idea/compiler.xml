@@ -11,12 +11,14 @@
         <module name="Product" />
         <module name="Payment" />
         <module name="Email" />
+        <module name="Inventory" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="Email" options="-parameters" />
+      <module name="Inventory" options="-parameters" />
       <module name="Order" options="-parameters" />
       <module name="Payment" options="-parameters" />
       <module name="Product" options="-parameters" />

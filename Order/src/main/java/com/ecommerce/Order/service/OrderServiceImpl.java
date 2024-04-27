@@ -1,5 +1,6 @@
 package com.ecommerce.Order.service;
 
+import com.ecommerce.Order.dto.OrderEvent;
 import com.ecommerce.Order.dto.OrderListDTO;
 import com.ecommerce.Order.dto.OrderRequest;
 import com.ecommerce.Order.model.Order;
@@ -8,8 +9,8 @@ import com.ecommerce.Order.repository.OrderRepository;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
@@ -20,6 +21,9 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private OrderRepository orderRepository;
 
+    @Autowired
+    private KafkaTemplate<String, OrderEvent> kafkaTemplate;
+
     @Override
     public String placeOrder(OrderRequest orderRequest) {
         Order order = new Order();
@@ -28,6 +32,7 @@ public class OrderServiceImpl implements OrderService {
         ).toList();
         order.setOrderListItems(orderListItems);
         orderRepository.save(order);
+        kafkaTemplate.send("emailTopic", new OrderEvent(order.getId()));
         return"order placed";
     }
 
