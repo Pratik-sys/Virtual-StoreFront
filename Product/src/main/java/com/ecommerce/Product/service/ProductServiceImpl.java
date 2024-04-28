@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.ecommerce.Product.repository.ProductRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -48,6 +49,13 @@ public class ProductServiceImpl implements  ProductService{
     public void deleteProductById(String id) {
         log.info("Deleted the product with id {}", id);
         productRepository.deleteById(id);
+    }
+
+    @Override
+    public ProductResponse getProductById(String id) {
+        Optional<Product> product = productRepository.findById(id);
+        return product.map(value -> modelMapper.map(value, ProductResponse.class)).orElse(null);
+
     }
 
     private  ProductResponse mapToProductResponse(Product product){

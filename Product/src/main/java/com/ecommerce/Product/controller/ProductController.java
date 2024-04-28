@@ -35,6 +35,10 @@ public class ProductController {
         productService.deleteProductById(id);
         return ResponseEntity.ok().body("Product with id " + id + "deleted");
     }
+    @PostMapping("/{id}")
+    public ResponseEntity<ProductResponse> getProductById(@PathVariable("id") String id ){
+        return ResponseEntity.ok().body(productService.getProductById(id));
+    }
 
 
 }
