@@ -7,4 +7,5 @@ import lombok.*;
 @NoArgsConstructor
 public class OrderEvent {
     private  long orderId;
+    private String orderNumber;
 }

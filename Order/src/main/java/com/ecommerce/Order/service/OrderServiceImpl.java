@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -27,13 +28,14 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public String placeOrder(OrderRequest orderRequest) {
         Order order = new Order();
+        order.setOrderNumber(UUID.randomUUID().toString());
         List<OrderListItems> orderListItems = orderRequest.getOrderListDTOS().stream().map(
                 this:: mapToDto
         ).toList();
         order.setOrderListItems(orderListItems);
         orderRepository.save(order);
-        kafkaTemplate.send("emailTopic", new OrderEvent(order.getId()));
-        return"order placed";
+        kafkaTemplate.send("emailTopic", new OrderEvent(order.getId(), order.getOrderNumber()));
+        return String.format("Order Placed with -> {Order Id: %d, OrderNumber: %s}", order.getId(), order.getOrderNumber());
     }
 
     private OrderListItems mapToDto(OrderListDTO orderListDTO) {

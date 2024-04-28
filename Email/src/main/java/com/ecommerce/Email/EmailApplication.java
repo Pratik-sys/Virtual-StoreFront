@@ -13,8 +13,8 @@ public class EmailApplication {
 		SpringApplication.run(EmailApplication.class, args);
 	}
 	@KafkaListener(topics = "emailTopic")
-	public void	handleNotification(OrderPlaceEvent orderPlaceEvent){
-		log.info("Received the event -> {}", orderPlaceEvent.toString());
+	public void	SendEmail(OrderResponse orderResponse){
+		log.info("Order Placed, find the orderId and order number for future reference -> {}", orderResponse.toString());
 
 	}
 
