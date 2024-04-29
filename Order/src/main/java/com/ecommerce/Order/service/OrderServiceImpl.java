@@ -59,12 +59,12 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private OrderListItems mapToDto(OrderListDTO orderListDTO) {
-
-        OrderListItems orderListItems = new OrderListItems();
-        orderListItems.setP_id(orderListDTO.getP_id());
-        orderListItems.setPrice(orderListDTO.getPrice());
-        orderListItems.setQuantity((orderListDTO.getQuantity()));
-        return orderListItems;
+        return OrderListItems.builder()
+                .id(orderListDTO.getId())
+                .p_id(orderListDTO.getP_id())
+                .price(orderListDTO.getPrice())
+                .quantity(orderListDTO.getQuantity())
+                .build();
 
     }
 }
