@@ -2,6 +2,7 @@ package com.ecommerce.Product.service;
 
 import com.ecommerce.Product.dto.ProductRequest;
 import com.ecommerce.Product.dto.ProductResponse;
+import com.ecommerce.Product.dto.ProductResponseToEmail;
 import com.ecommerce.Product.model.Product;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -52,9 +53,9 @@ public class ProductServiceImpl implements  ProductService{
     }
 
     @Override
-    public ProductResponse getProductById(String id) {
+    public ProductResponseToEmail getProductById(String id) {
         Optional<Product> product = productRepository.findById(id);
-        return product.map(value -> modelMapper.map(value, ProductResponse.class)).orElse(null);
+        return product.map(value -> modelMapper.map(value, ProductResponseToEmail.class)).orElse(null);
 
     }
 

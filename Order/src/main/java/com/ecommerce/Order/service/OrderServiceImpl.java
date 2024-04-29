@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,7 +36,11 @@ public class OrderServiceImpl implements OrderService {
         ).toList();
         order.setOrderListItems(orderListItems);
         orderRepository.save(order);
-        kafkaTemplate.send("emailTopic", new OrderEvent(order.getId(), order.getOrderNumber()));
+        List<String> pIds = new ArrayList<>();
+        for(OrderListItems items : orderListItems){
+            pIds.add(items.getP_id());
+        }
+        kafkaTemplate.send("emailTopic", new OrderEvent(order.getId(), order.getOrderNumber(),pIds));
         return String.format("Order Placed with -> {Order Id: %d, OrderNumber: %s}", order.getId(), order.getOrderNumber());
     }
 

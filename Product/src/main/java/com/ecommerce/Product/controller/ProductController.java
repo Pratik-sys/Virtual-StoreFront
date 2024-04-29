@@ -2,6 +2,7 @@ package com.ecommerce.Product.controller;
 
 import com.ecommerce.Product.dto.ProductRequest;
 import com.ecommerce.Product.dto.ProductResponse;
+import com.ecommerce.Product.dto.ProductResponseToEmail;
 import com.ecommerce.Product.service.ProductService;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -36,7 +37,7 @@ public class ProductController {
         return ResponseEntity.ok().body("Product with id " + id + "deleted");
     }
     @GetMapping("/{id}")
-    public ResponseEntity<ProductResponse> getProductById(@PathVariable("id") String id ){
+    public ResponseEntity<ProductResponseToEmail> getProductById(@PathVariable("id") String id ){
         return ResponseEntity.ok().body(productService.getProductById(id));
     }
 
