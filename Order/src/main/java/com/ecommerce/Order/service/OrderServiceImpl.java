@@ -1,5 +1,6 @@
 package com.ecommerce.Order.service;
 
+import com.ecommerce.Order.dto.OrderCheckStock;
 import com.ecommerce.Order.dto.OrderEvent;
 import com.ecommerce.Order.dto.OrderListDTO;
 import com.ecommerce.Order.dto.OrderRequest;
@@ -8,17 +9,20 @@ import com.ecommerce.Order.model.OrderListItems;
 import com.ecommerce.Order.repository.OrderRepository;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 import java.math.BigDecimal;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
 @Service
 @AllArgsConstructor
 @NoArgsConstructor
+@Slf4j
 public class OrderServiceImpl implements OrderService {
 
     @Autowired
@@ -39,23 +43,37 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderListItems(orderListItems);
         order.setPaymentStatus("Pending");
         order.setTotalAmount(totalAmount);
-        orderRepository.save(order);
-        List<String> pIds = new ArrayList<>();
-        for(OrderListItems items : orderListItems){
-            pIds.add(items.getP_id());
+
+        // Make a web call to Inventory service for stock check for product_id
+        List<String> p_id = orderListItems.stream().map(OrderListItems::getP_id).toList();
+        log.info("Calling in Inventory service on localhost:8084");
+        WebClient webClient = WebClient.create("http://localhost:8084");
+        OrderCheckStock[] orderCheckStocks = webClient
+                .get()
+                .uri("api/product/inventory/check-stock",uriBuilder -> uriBuilder.queryParam("p_id", p_id).build())
+                .retrieve()
+                .bodyToMono(OrderCheckStock[].class).block();
+        boolean allProductInStock = Arrays.stream(orderCheckStocks).allMatch(OrderCheckStock::is_inStock);
+        log.info("Products availability {}", allProductInStock);
+        if(allProductInStock){
+            orderRepository.save(order);
+            kafkaTemplate.send("paymentTopic", new OrderEvent(
+                    order.getOrderNumber(),
+                    p_id,
+                    order.getPaymentStatus(),
+                    order.getTotalAmount()));
+            return String.format("Order Placed with -> {Order Id: %d, OrderNumber: %s, Payment Status: %s, Total Amount: %s, Products Ordered: %s}",
+                    order.getId(),
+                    order.getOrderNumber(),
+                    order.getPaymentStatus(),
+                    order.getTotalAmount(),
+                    p_id
+            );
         }
-        kafkaTemplate.send("paymentTopic", new OrderEvent(
-                order.getOrderNumber(),
-                pIds,
-                order.getPaymentStatus(),
-                order.getTotalAmount()));
-        return String.format("Order Placed with -> {Order Id: %d, OrderNumber: %s, Payment Status: %s, Total Amount: %s, Products Ordered: %s}",
-                order.getId(),
-                order.getOrderNumber(),
-                order.getPaymentStatus(),
-                order.getTotalAmount(),
-                pIds
-        );
+        else {
+            throw  new IllegalArgumentException("Product is not in Stock, please try again later");
+        }
+
     }
 
     private OrderListItems mapToDto(OrderListDTO orderListDTO) {
