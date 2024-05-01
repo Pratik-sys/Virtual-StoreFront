@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/order")
+@RequestMapping("/api/product/order")
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderController {
@@ -17,7 +17,7 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    @PostMapping("/add")
+    @PostMapping("/placeOrder")
     @ResponseStatus(HttpStatus.CREATED)
     public  String placeOrder(@RequestBody OrderRequest orderRequest){
         return orderService.placeOrder(orderRequest);
