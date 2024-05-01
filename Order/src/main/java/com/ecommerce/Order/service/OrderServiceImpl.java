@@ -48,6 +48,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private Order createOrder(OrderRequest orderRequest) {
+        log.info("Creating order...");
         Order order = new Order();
         order.setOrderNumber(UUID.randomUUID().toString());
         List<OrderListItems> orderListItems = orderRequest.getOrderListDTOS().stream()
@@ -55,10 +56,12 @@ public class OrderServiceImpl implements OrderService {
                 .toList();
         order.setOrderListItems(orderListItems);
         order.setPaymentStatus("Pending");
+        log.info("order created successfully {}", order);
         return order;
     }
 
     private BigDecimal calculateTotalAmount(List<OrderListItems> orderListItems) {
+        log.info("Calculating total amount");
         return orderListItems.stream()
                 .map(OrderListItems::getPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -81,6 +84,7 @@ public class OrderServiceImpl implements OrderService {
         boolean allProductInStock = Arrays.stream(orderCheckStocks)
                 .allMatch(OrderCheckStock::is_inStock);
         if (!allProductInStock) {
+            log.error("Product is not in Stock, please try again later");
             throw new IllegalArgumentException("Product is not in Stock, please try again later");
         }
     }
@@ -89,11 +93,14 @@ public class OrderServiceImpl implements OrderService {
         List<String> pIds = order.getOrderListItems().stream()
                 .map(OrderListItems::getP_id)
                 .toList();
-        kafkaTemplate.send("paymentTopic", new OrderEvent(
+        OrderEvent orderEvent = new OrderEvent(
                 order.getOrderNumber(),
                 pIds,
                 order.getPaymentStatus(),
-                order.getTotalAmount()));
+                order.getTotalAmount()
+        );
+        kafkaTemplate.send("paymentTopic", orderEvent);
+        log.info("Sent order further for payment processing, {}", orderEvent);
     }
 
     private String formatOrderConfirmation(Order order) {

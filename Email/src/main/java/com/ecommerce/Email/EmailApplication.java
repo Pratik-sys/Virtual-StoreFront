@@ -22,6 +22,8 @@ public class EmailApplication {
 
 	@KafkaListener(topics = "emailTopic")
 	public void	SendEmail(PaymentResponse paymentResponse){
+		log.info("Received event from payment service {}", paymentResponse);
+		log.info("Calling product service via webclient to fetch product details");
 		WebClient webClient = WebClient.create("http://localhost:8080");
 		List<String> getPIds = paymentResponse.getP_id();
 		for(String response: getPIds) {
@@ -29,7 +31,7 @@ public class EmailApplication {
 					.uri(String.format("/api/product/%s", response))
 					.retrieve()
 					.bodyToMono(ProductFetch.class);
-			log.info("Order Placed, Order number is: {} and list of products ordered: {}", paymentResponse.toString(), result.block());
+			log.info("Order Placed, Order number is: {} and list of products ordered: {}", paymentResponse.getOrderNumber(), result.block());
 		}
 		}
 	}
