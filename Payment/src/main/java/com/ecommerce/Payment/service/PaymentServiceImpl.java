@@ -1,7 +1,6 @@
 package com.ecommerce.Payment.service;
 
 import com.ecommerce.Payment.dto.ConfirmPaymentResponse;
-import com.ecommerce.Payment.dto.OrderPaymentResponse;
 import com.ecommerce.Payment.model.Payment;
 import com.ecommerce.Payment.repository.PaymentRepository;
 import lombok.AllArgsConstructor;
@@ -10,10 +9,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
-
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 import java.math.BigDecimal;
-import java.security.PublicKey;
 import java.util.Optional;
+
 @Service
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,34 +26,6 @@ public class PaymentServiceImpl implements PaymentService  {
     @Autowired
     KafkaTemplate<String, ConfirmPaymentResponse> kafkaTemplate;
 
-//    @Override
-//    public void makePayment(String id, BigDecimal amount){
-//        log.info("Finding payment by id : {}", id);
-//        Optional<Payment> payment  = paymentRepository.findById(id);
-//        log.info("found Payment with amount of {}", amount);
-//        if(payment.isPresent() && payment.get().getTotalAmount().equals(amount)){
-//            log.info("Checking if payment is present and amount matches to existing one");
-//            Payment pay = payment.get();
-//            pay.setPaymentStatus("Payment Confirmed");
-//            log.info("Set payment status to confirm");
-//            paymentRepository.save(pay);
-//            log.info("Received the payment for {} and payment status is updated to {}" , amount,pay.getPaymentStatus());
-//        }
-//        if (payment.isPresent() && payment.get().getPaymentStatus().equals("Payment Confirmed")){
-//            log.info("checking if payment status of {} is set to 'Payment Confirmed' ", id);
-//            kafkaTemplate.send("emailTopic", new ConfirmPaymentResponse(
-//                    payment.get().getPaymentId(),
-//                    payment.get().getPaymentStatus(),
-//                    payment.get().getOrderNumber(),
-//                    payment.get().getTotalAmount(),
-//                    payment.get().getP_id()
-//
-//            ));
-//        }
-//        else{
-//            log.error("Something went wrong do check");
-//        }
-//    }
     @Override
     public boolean makePayment(String id, BigDecimal amount){
         log.info("Finding payment by id: {}", id);
@@ -69,6 +41,7 @@ public class PaymentServiceImpl implements PaymentService  {
         }
         updatePaymentStatus(payment);
         sendConfirmationEmail(payment);
+        updatePaymentStatusInOrders(payment);
         return true;
     }
 
@@ -77,7 +50,6 @@ public class PaymentServiceImpl implements PaymentService  {
             log.error("Payment status is not set to 'Payment Confirmed' for id: {}", payment.getPaymentId());
             return;
         }
-
         log.info("Sending confirmation email for payment with id: {}", payment.getPaymentId());
         ConfirmPaymentResponse confirmPaymentResponse = new ConfirmPaymentResponse(
                 payment.getPaymentId(),
@@ -95,6 +67,22 @@ public class PaymentServiceImpl implements PaymentService  {
         payment.setPaymentStatus("Payment Confirmed");
         paymentRepository.save(payment);
         log.info("Payment status updated successfully");
+    }
+
+    private void updatePaymentStatusInOrders(Payment payment){
+        log.info("Updating payment status to 'Payment Confirmed' for id: {} in order service",payment.getOrderNumber());
+        log.info("calling order service to update payment status");
+        WebClient webClient = WebClient.create("http://localhost:8081");
+       Mono<String> result = webClient
+               .put()
+                .uri(uriBuilder -> uriBuilder.path("api/product/order/updateOrder")
+                        .queryParam("orderNumber", String.valueOf(payment.getOrderNumber()))
+                        .queryParam("paymentStatus", String.valueOf(payment.getPaymentStatus())).build()
+                        )
+                .retrieve()
+                .bodyToMono(String.class);
+       log.info("sent request to order service with object {}", result.block());
+
     }
 
 }

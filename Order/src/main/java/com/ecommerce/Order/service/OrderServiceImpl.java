@@ -1,9 +1,6 @@
 package com.ecommerce.Order.service;
 
-import com.ecommerce.Order.dto.OrderCheckStock;
-import com.ecommerce.Order.dto.OrderEvent;
-import com.ecommerce.Order.dto.OrderListDTO;
-import com.ecommerce.Order.dto.OrderRequest;
+import com.ecommerce.Order.dto.*;
 import com.ecommerce.Order.model.Order;
 import com.ecommerce.Order.model.OrderListItems;
 import com.ecommerce.Order.repository.OrderRepository;
@@ -18,6 +15,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -113,5 +111,17 @@ public class OrderServiceImpl implements OrderService {
                 order.getPaymentStatus(),
                 order.getTotalAmount(),
                 pIds);
+    }
+    public void updatePaymentStatus(String orderNumber, String paymentStatus ){
+        log.info("Finding order by order number {}",orderNumber );
+        Order order = orderRepository.findByOrderNumber(orderNumber);
+        if (order == null){
+            log.error("No such order  with order number found {}", orderNumber);
+            return;
+        }
+        log.info("Setting Payment status to {}",paymentStatus);
+        order.setPaymentStatus(paymentStatus);
+        orderRepository.save(order);
+        log.info("Order update successfully {}", order);
     }
 }
