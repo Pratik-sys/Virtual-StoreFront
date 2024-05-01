@@ -4,5 +4,5 @@ import java.math.BigDecimal;
 
 public interface PaymentService {
 
-    void makePayment(String id, BigDecimal amount);
+    boolean makePayment(String id, BigDecimal amount);
 }
