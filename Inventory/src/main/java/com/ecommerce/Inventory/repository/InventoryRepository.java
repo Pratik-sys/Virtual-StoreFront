@@ -8,6 +8,7 @@ import java.util.List;
 
 @Repository
 public interface InventoryRepository extends JpaRepository<Inventory, Long > {
+
     List<Inventory> findByProductIdIn(List<String> pIds);
 
 }

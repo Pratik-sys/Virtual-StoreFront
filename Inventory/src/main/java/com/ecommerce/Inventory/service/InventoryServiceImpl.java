@@ -27,7 +27,7 @@ public class InventoryServiceImpl implements InventoryService{
 
     @Override
     public List<OrderInventoryResponse> checkStock(List<String> p_id) {
-        log.info("checking stock..");
+        log.info("checking stock of product ID's: {}", p_id);
         return  inventoryRepository.findByProductIdIn(p_id).stream().map(
                 inventory -> OrderInventoryResponse.builder()
                         .pId(inventory.getProductId())
@@ -37,11 +37,13 @@ public class InventoryServiceImpl implements InventoryService{
 
     @Override
     public InventoryUpdate addProductsToInventory(InventoryUpdate inventoryUpdate) {
+        log.info("Adding products to Inventory");
         Inventory inventory = Inventory.builder()
                 .productId(inventoryUpdate.getP_id())
                 .quantity(inventoryUpdate.getQuantity())
                 .build();
         inventoryRepository.save(inventory);
+        log.info("Saved inventory:{}", inventory);
         return  modelMapper.map(inventory, InventoryUpdate.class);
     }
 }
