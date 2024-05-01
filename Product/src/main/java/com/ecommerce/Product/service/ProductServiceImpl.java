@@ -35,7 +35,7 @@ public class ProductServiceImpl implements  ProductService{
                 .description(productRequest.getDescription())
                 .build();
         productRepository.save(product);
-        log.info("Product added -> {}", product);
+        log.info("Product saved to database -> {}", product);
         return modelMapper.map(product, ProductRequest.class);
     }
 
@@ -43,7 +43,7 @@ public class ProductServiceImpl implements  ProductService{
     public List<ProductResponse> listAllProducts() {
         List<Product> findProducts = productRepository.findAll();
         log.info("Fetched products -> {}", findProducts);
-        return findProducts.stream().map(this::mapToProductResponse).toList();
+        return findProducts.stream().map(value -> modelMapper.map(value, ProductResponse.class)).toList();
     }
 
     @Override
@@ -55,16 +55,8 @@ public class ProductServiceImpl implements  ProductService{
     @Override
     public ProductResponseToEmail getProductById(String id) {
         Optional<Product> product = productRepository.findById(id);
+        log.info("Product with id {} : {}", id, product);
         return product.map(value -> modelMapper.map(value, ProductResponseToEmail.class)).orElse(null);
 
-    }
-
-    private  ProductResponse mapToProductResponse(Product product){
-       return  ProductResponse.builder()
-               .id(product.getId())
-                .name(product.getName())
-                .price(product.getPrice())
-                .description(product.getDescription())
-                .build();
     }
 }
