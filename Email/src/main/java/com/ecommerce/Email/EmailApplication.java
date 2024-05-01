@@ -1,5 +1,7 @@
 package com.ecommerce.Email;
 
+import com.ecommerce.Email.dto.PaymentResponse;
+import com.ecommerce.Email.dto.ProductFetch;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

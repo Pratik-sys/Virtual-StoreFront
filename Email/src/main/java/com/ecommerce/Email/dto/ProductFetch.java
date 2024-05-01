@@ -1,4 +1,4 @@
-package com.ecommerce.Email;
+package com.ecommerce.Email.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
