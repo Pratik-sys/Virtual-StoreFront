@@ -11,7 +11,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ecommerce.Product.repository.ProductRepository;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -29,6 +28,7 @@ public class ProductServiceImpl implements  ProductService{
 
     @Override
     public ProductRequest addProducts(ProductRequest productRequest) {
+        log.info("Building Product to save in database");
         Product product = Product.builder()
                 .name(productRequest.getName())
                 .price(productRequest.getPrice())
@@ -41,19 +41,29 @@ public class ProductServiceImpl implements  ProductService{
 
     @Override
     public List<ProductResponse> listAllProducts() {
+        log.info("Fetching all products.....");
         List<Product> findProducts = productRepository.findAll();
         log.info("Fetched products -> {}", findProducts);
         return findProducts.stream().map(value -> modelMapper.map(value, ProductResponse.class)).toList();
     }
 
     @Override
-    public void deleteProductById(String id) {
-        log.info("Deleted the product with id {}", id);
-        productRepository.deleteById(id);
+    public boolean deleteProductById(String id) {
+        log.info("Finding the product with id {}", id);
+        Optional<Product>  optionalProduct = productRepository.findById(id);
+        if(optionalProduct.isEmpty()){
+            log.error("No such product found with id: {}", id);
+            return false;
+        }
+        Product product = optionalProduct.get();
+        productRepository.delete(product);
+        log.info("Product with id {} deleted successfully", id);
+        return  true;
     }
 
     @Override
     public ProductResponseToEmail getProductById(String id) {
+        log.info("Finding product by id: {}", id);
         Optional<Product> product = productRepository.findById(id);
         log.info("Product with id {} : {}", id, product);
         return product.map(value -> modelMapper.map(value, ProductResponseToEmail.class)).orElse(null);

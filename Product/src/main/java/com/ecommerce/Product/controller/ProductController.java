@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -16,7 +17,6 @@ import java.util.List;
 @RequestMapping("api/product/")
 @AllArgsConstructor
 @NoArgsConstructor
-@Slf4j
 public class ProductController {
 
     @Autowired
@@ -30,19 +30,19 @@ public class ProductController {
 
     @PostMapping("/add")
     public ResponseEntity<ProductRequest> addProducts(@RequestBody ProductRequest productRequest){
-        log.info("Received Request Body {}", productRequest);
         return ResponseEntity.ok().body(productService.addProducts(productRequest));
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteProductById (@PathVariable("id") String id ){
-        log.info("Received the id to delete product {}", id);
-        productService.deleteProductById(id);
-        return ResponseEntity.ok().body(String.format("Product removed from database with id : %s",id));
+        boolean productRemoved = productService.deleteProductById(id);
+        if(productRemoved){
+            return ResponseEntity.ok().body(String.format("Product Removed with id: %s", id));
+        }
+        else return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Request failed: Invalid id provided");
     }
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponseToEmail> getProductById(@PathVariable("id") String id ){
-        log.info("Received the id to fetch the product {}", id);
         return ResponseEntity.ok().body(productService.getProductById(id));
     }
 
