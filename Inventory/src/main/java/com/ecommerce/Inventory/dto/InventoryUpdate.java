@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class InventoryUpdate {
-    private String p_id;
-    private  String name;
+
+    private String productId;
     private  int quantity;
 }

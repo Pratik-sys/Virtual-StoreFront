@@ -39,7 +39,7 @@ public class InventoryServiceImpl implements InventoryService{
     public InventoryUpdate addProductsToInventory(InventoryUpdate inventoryUpdate) {
         log.info("Adding products to Inventory");
         Inventory inventory = Inventory.builder()
-                .productId(inventoryUpdate.getP_id())
+                .productId(inventoryUpdate.getProductId())
                 .quantity(inventoryUpdate.getQuantity())
                 .build();
         inventoryRepository.save(inventory);
