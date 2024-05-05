@@ -53,7 +53,6 @@ public class OrderServiceImpl implements OrderService {
                 .map(orderListDTO -> modelMapper.map(orderListDTO, OrderListItems.class))
                 .toList();
         order.setOrderListItems(orderListItems);
-        orderListItems.forEach(itm -> itm.setOrder(order));
         order.setPaymentStatus("Pending");
         log.info("order created successfully {}", order);
         return order;

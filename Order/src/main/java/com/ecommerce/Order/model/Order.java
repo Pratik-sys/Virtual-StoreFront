@@ -20,7 +20,8 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private  long id;
     private  String orderNumber;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "order")
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "order_id")
     private List<OrderListItems> orderListItems;
     private String paymentStatus;
     private BigDecimal totalAmount;
