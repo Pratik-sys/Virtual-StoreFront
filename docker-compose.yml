@@ -1,16 +1,16 @@
 services:
 
-zookeeper:
-  image: confluentinc/cp-zookeeper:7.0.1
-  container_name: zookeeper_service
-  ports:
-    - "2181:2181"
-  environment:
-    ZOOKEEPER_CLIENT_PORT: 2181
-    ZOOKEEPER_TICK_TIME: 2000
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.6.1
+    container_name: zookeeper_service
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
 
   kafka:
-    image: confluentinc/cp-kafka:7.0.1
+    image: confluentinc/cp-kafka:7.6.1
     container_name: kafka_service
     ports:
       - "9092:9092"
@@ -38,3 +38,66 @@ zookeeper:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - ./postgres_data:/var/lib/postgresql/data
+
+  product:
+    image: pratik27/product:1.3
+    container_name: product
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING.DATA.MONGODB.URI=mongodb+srv://${MONGODB_USER}:${MONGODB_PASSWORD}@cluster1.j7yjd.mongodb.net/Ecommerce
+      - MONGODB_USER=${MONGODB_USER}
+      - MONGODB_PASSWORD=${MONGODB_PASSWORD}
+
+  order:
+    image: pratik27/order:1.3
+    container_name: order
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB_NAME=${POSTGRES_DB_NAME}
+    depends_on:
+      - postgres
+      - kafka
+
+  inventory:
+    image: pratik27/inventory:1.3
+    container_name: inventory
+    ports:
+      - "8084:8084"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB_NAME=${POSTGRES_DB_NAME}
+    depends_on:
+      - postgres
+      - kafka
+
+  payment:
+    image: pratik27/payment:1.3
+    container_name: payment
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB_NAME=${POSTGRES_DB_NAME}
+    depends_on:
+      - postgres
+      - kafka
+
+  email:
+    image: pratik27/email:1.3
+    container_name: email
+    ports:
+      - "8083:8083"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - postgres
+      - kafka
