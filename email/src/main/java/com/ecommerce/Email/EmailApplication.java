@@ -10,7 +10,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-
 import java.util.List;
 
 @SpringBootApplication
@@ -30,30 +29,20 @@ public class EmailApplication {
 		log.info("Received event from payment service {}", paymentResponse);
 		log.info("Calling product service via webclient to fetch product details");
 		log.info("Active profile is : {}", environment.getActiveProfiles());
-		if(environment.matchesProfiles("docker")){
-			WebClient webClient = WebClient.create("http://product:8080");
-			List<String> getPIds = paymentResponse.getP_id();
-			for(String response: getPIds) {
-				Mono<ProductFetch> result = webClient.get()
-						.uri(String.format("/api/product/%s", response))
-						.retrieve()
-						.bodyToMono(ProductFetch.class);
+		String productBaseURL = environment.matchesProfiles("docker") ? "http://product:8080" : "http://localhost:8080";
+			WebClient webClient = WebClient.create(productBaseURL);
+			List<String> getProductIds = paymentResponse.getP_id();
+			for(String productId: getProductIds) {
+				Mono<ProductFetch> result= fetchProductDetails(webClient, productId);
 				log.info("Order Placed, Order number is: {} and list of products ordered: {}", paymentResponse.getOrderNumber(), result.block());
 			}
 		}
-		else{
-			WebClient webClient = WebClient.create("http://localhost:8080");
-			List<String> getPIds = paymentResponse.getP_id();
-			for(String response: getPIds) {
-				Mono<ProductFetch> result = webClient.get()
-						.uri(String.format("/api/product/%s", response))
-						.retrieve()
-						.bodyToMono(ProductFetch.class);
-				log.info("Order Placed, Order number is: {} and list of products ordered: {}", paymentResponse.getOrderNumber(), result.block());
-			}
-		}
-
-		}
+	private Mono<ProductFetch> fetchProductDetails(WebClient webClient, String productId) {
+		return webClient.get()
+				.uri("/api/product/{productId}", productId)
+				.retrieve()
+				.bodyToMono(ProductFetch.class);
+	}
 	}
 
 
