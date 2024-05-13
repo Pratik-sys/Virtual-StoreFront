@@ -10,9 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.Optional;
 
 @Service
@@ -26,6 +25,9 @@ public class PaymentServiceImpl implements PaymentService  {
 
     @Autowired
     KafkaTemplate<String, ConfirmPaymentResponse> kafkaTemplate;
+
+    @Autowired
+    KafkaTemplate<String, HashMap<String, String>> template;
 
     @Autowired
     private Environment environment;
@@ -74,35 +76,13 @@ public class PaymentServiceImpl implements PaymentService  {
     }
 
     private void updatePaymentStatusInOrders(Payment payment){
-        log.info("Updating payment status to 'Payment Confirmed' for id: {} in order service",payment.getOrderNumber());
-        log.info("calling order service to update payment status");
-        log.info("Active Profile is : {} ", environment.getActiveProfiles());
-        if(environment.matchesProfiles("docker")){
-            WebClient webClient = WebClient.create("http://order:8081");
-            Mono<String> result = webClient
-                    .put()
-                    .uri(uriBuilder -> uriBuilder.path("api/product/order/updateOrder")
-                            .queryParam("orderNumber", String.valueOf(payment.getOrderNumber()))
-                            .queryParam("paymentStatus", String.valueOf(payment.getPaymentStatus())).build()
-                    )
-                    .retrieve()
-                    .bodyToMono(String.class);
-            log.info("sent request to order service with object {}", result.block());
-        }
-        else{
-            WebClient webClient = WebClient.create("http://localhost:8081");
-            Mono<String> result = webClient
-                    .put()
-                    .uri(uriBuilder -> uriBuilder.path("api/product/order/updateOrder")
-                            .queryParam("orderNumber", String.valueOf(payment.getOrderNumber()))
-                            .queryParam("paymentStatus", String.valueOf(payment.getPaymentStatus())).build()
-                    )
-                    .retrieve()
-                    .bodyToMono(String.class);
-            log.info("sent request to order service with object {}", result.block());
-        }
-
-
+        log.info("Sending event to order service, via 'order-topic' update payment for orderNumber: {}",payment.getOrderNumber());
+        HashMap<String, String> orderDetails = new HashMap<>();
+        log.info("Collecting needful parameters in HashMap");
+        orderDetails.put("orderNumber", String.valueOf(payment.getOrderNumber()));
+        orderDetails.put("paymentStatus", String.valueOf(payment.getPaymentStatus()));
+        template.send("order-topic", orderDetails);
+        log.info("Trigger sent to order service");
     }
 
 }

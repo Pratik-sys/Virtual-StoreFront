@@ -10,11 +10,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -118,16 +120,17 @@ public class OrderServiceImpl implements OrderService {
                 order.getTotalAmount(),
                 pIds);
     }
-    public void updatePaymentStatus(String orderNumber, String paymentStatus ){
-        log.info("Finding order by order number {}",orderNumber );
-        Order order = orderRepository.findByOrderNumber(orderNumber);
+    @KafkaListener(topics = "order-topic")
+    public void updatePaymentStatus(HashMap<String, String> paymentResponse){
+        log.info("Received an event from payment service ---> {}", paymentResponse);
+        Order order = orderRepository.findByOrderNumber(paymentResponse.get("orderNumber"));
         if (order == null){
-            log.error("No such order  with order number found {}", orderNumber);
+            log.error("No such order  with order number found {}", paymentResponse.get("orderNumber"));
             return;
         }
-        log.info("Setting Payment status to {}",paymentStatus);
-        order.setPaymentStatus(paymentStatus);
+        log.info("Setting Payment status to {}" , paymentResponse.get("paymentStatus"));
+        order.setPaymentStatus(paymentResponse.get("paymentStatus"));
         orderRepository.save(order);
-        log.info("Order update successfully {}", order);
+        log.info("Payment set to {} for order number: {}",paymentResponse.get("paymentStatus"), paymentResponse.get("orderNumber"));
     }
 }

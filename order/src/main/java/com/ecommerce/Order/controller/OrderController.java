@@ -23,9 +23,4 @@ public class OrderController {
     public ResponseEntity<String> placeOrder(@RequestBody OrderRequest orderRequest){
         return  ResponseEntity.ok().body(orderService.placeOrder(orderRequest));
     }
-    @PutMapping("/updateOrder")
-    public ResponseEntity<String> updateOrderPaymentStatus(@RequestParam String orderNumber, @RequestParam String paymentStatus){
-        orderService.updatePaymentStatus(orderNumber,paymentStatus);
-        return ResponseEntity.ok().body(String.format("Payment Status for order number: %s is updated successfully", orderNumber));
-    }
 }
