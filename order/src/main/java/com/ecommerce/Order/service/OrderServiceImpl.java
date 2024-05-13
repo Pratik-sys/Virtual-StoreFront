@@ -16,7 +16,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -74,41 +73,22 @@ public class OrderServiceImpl implements OrderService {
                 .map(OrderListItems::getP_id)
                 .toList();
         log.info("Checking product availability for {}", pIds);
-        log.info("Active Profile is : {} ", environment.getActiveProfiles());
-        if(environment.matchesProfiles("docker")){
-            WebClient webClient = WebClient.create("http://inventory:8084");
-            OrderCheckStock[] orderCheckStocks = webClient
-                    .get()
-                    .uri(uriBuilder -> uriBuilder.path("api/product/inventory/check-stock")
-                            .queryParam("p_id", pIds)
-                            .build())
-                    .retrieve()
-                    .bodyToMono(OrderCheckStock[].class)
-                    .block();
-            boolean allProductInStock = Arrays.stream(orderCheckStocks)
-                    .allMatch(OrderCheckStock::is_inStock);
-            if (!allProductInStock) {
-                log.error("Product is not in Stock, please try again later");
-                throw new IllegalArgumentException("Product is not in Stock, please try again later");
-            }
-
-        }
-        else{
-            WebClient webClient = WebClient.create("http://localhost:8084");
-            OrderCheckStock[] orderCheckStocks = webClient
-                    .get()
-                    .uri(uriBuilder -> uriBuilder.path("api/product/inventory/check-stock")
-                            .queryParam("p_id", pIds)
-                            .build())
-                    .retrieve()
-                    .bodyToMono(OrderCheckStock[].class)
-                    .block();
-            boolean allProductInStock = Arrays.stream(orderCheckStocks)
-                    .allMatch(OrderCheckStock::is_inStock);
-            if (!allProductInStock) {
-                log.error("Product is not in Stock, please try again later");
-                throw new IllegalArgumentException("Product is not in Stock, please try again later");
-            }
+        String inventoryBaseURL = environment.matchesProfiles("docker") ? "http://inventory:8084" : "http://localhost:8084";
+        log.info("Active Profile is {} and base URL is: {}", environment.getActiveProfiles(), inventoryBaseURL);
+        WebClient webClient = WebClient.create(inventoryBaseURL);
+        OrderCheckStock[] orderCheckStocks = webClient
+                .get()
+                .uri(uriBuilder -> uriBuilder.path("api/product/inventory/check-stock")
+                        .queryParam("p_id", pIds)
+                        .build())
+                .retrieve()
+                .bodyToMono(OrderCheckStock[].class)
+                .block();
+        boolean allProductInStock = Arrays.stream(orderCheckStocks)
+                .allMatch(OrderCheckStock::is_inStock);
+        if (!allProductInStock) {
+            log.error("Product is not in Stock, please try again later");
+            throw new IllegalArgumentException("Product is not in Stock, please try again later");
         }
 
     }
