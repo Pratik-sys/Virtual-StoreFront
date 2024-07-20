@@ -21,6 +21,9 @@
         <module>inventory</module>
         <module>payment</module>
         <module>email</module>
+        <module>user</module>
+        <module>user</module>
+        <module>user</module>
     </modules>
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
