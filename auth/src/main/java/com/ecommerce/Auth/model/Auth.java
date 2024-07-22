@@ -19,5 +19,5 @@ public class Auth {
     private String id;
     private String email;
     private String Password;
-    private Date createdDate = new Date();
+    private Date createdDate;
 }

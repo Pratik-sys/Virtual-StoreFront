@@ -8,6 +8,7 @@ import com.ecommerce.Auth.repository.AuthRepository;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,26 +25,28 @@ public class AuthServiceImpl implements AuthService{
     @Autowired
     private AuthRepository authRepository;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     @Override
     public UserRegister registerUser(UserRegister userRegister) {
         Auth auth = Auth.builder()
                 .email(userRegister.getEmail())
                 .Password(userRegister.getPassword())
+                .createdDate(new Date())
                 .build();
         authRepository.save(auth);
-        return userRegister;
+        return modelMapper.map(auth, UserRegister.class);
     }
 
     @Override
-    public UserLogin loginUser(UserLogin userLogin) {
-        Boolean auth  = authRepository.findByEmail(userLogin.getEmail());
-        if(auth){
-            return userLogin;
+    public Boolean loginUser(UserLogin userLogin) {
+        Optional<Auth> optionalUser = authRepository.findByEmail(userLogin.getEmail());
+        if(optionalUser.isEmpty()){
+            return false;
         }
-        else {
-            return null;
-        }
-
+        Auth UthUser = optionalUser.get();
+        return true;
     }
 
     @Override
@@ -61,7 +64,6 @@ public class AuthServiceImpl implements AuthService{
     @Override
     public List<UserList> listAllUsers() {
         List<Auth> fetchAllUsers = authRepository.findAll();
-        System.out.println( fetchAllUsers);
-        return  null;
+        return fetchAllUsers.stream().map(value -> modelMapper.map(value, UserList.class)).toList();
     }
 }

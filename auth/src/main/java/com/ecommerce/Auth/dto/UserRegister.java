@@ -13,5 +13,5 @@ import java.util.Date;
 public class UserRegister {
     private String email;
     private String Password;
-    private Date createdDate = new Date();
+    private Date createdDate;
 }

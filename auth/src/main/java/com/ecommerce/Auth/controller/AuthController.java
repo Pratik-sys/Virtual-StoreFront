@@ -28,14 +28,19 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserLogin> loginUser(@RequestBody UserLogin userLogin) {
-        return ResponseEntity.ok().body(authService.loginUser(userLogin));
+    public ResponseEntity<String> loginUser(@RequestBody UserLogin userLogin) {
+        boolean userAuthenticated = authService.loginUser(userLogin);
+        if (userAuthenticated){
+            return ResponseEntity.ok().body(String.format("User %s Logged in", userLogin.getEmail()));
+        }
+        else return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid Credentials");
     }
 
     @GetMapping("/fetch-all-users")
     public ResponseEntity<List<UserList>> fetchAllUsers(){
         return ResponseEntity.ok().body(authService.listAllUsers());
     }
+
     @DeleteMapping("/del/{id}")
     public ResponseEntity<String> deleteProductById (@PathVariable("id") String id ) {
         boolean removeUser = authService.deleteUserById(id);

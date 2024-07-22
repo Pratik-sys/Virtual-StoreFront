@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface AuthService {
     UserRegister registerUser(UserRegister userRegister);
-    UserLogin loginUser(UserLogin userLogin);
+    Boolean loginUser(UserLogin userLogin);
     boolean deleteUserById(String id);
     List<UserList> listAllUsers();
 }

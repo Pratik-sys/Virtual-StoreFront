@@ -12,5 +12,5 @@ import java.util.Date;
 @Builder
 public class UserList {
     private String email;
-    private Date createdDate = new Date();
+    private Date createdDate;
 }
