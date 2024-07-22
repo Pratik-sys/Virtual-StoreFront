@@ -10,17 +10,19 @@
         <module name="product" />
         <module name="payment" />
         <module name="inventory" />
-        <module name="user" />
+        <module name="auth" />
         <module name="email" />
         <module name="order" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="test" target="17" />
+      <module name="user" target="17" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="auth" options="-parameters" />
       <module name="email" options="-parameters" />
       <module name="inventory" options="-parameters" />
       <module name="order" options="-parameters" />
