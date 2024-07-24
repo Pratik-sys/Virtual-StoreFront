@@ -1,15 +1,15 @@
 package com.ecommerce.Auth.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.util.Date;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class UserLogin {
+@NoArgsConstructor
+public class RegisterResponse {
     private String email;
-    private String Password;
+    private String password;
+    private Date createdDate;
 }
