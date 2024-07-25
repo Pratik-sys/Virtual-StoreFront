@@ -1,5 +1,7 @@
 package com.ecommerce.Auth.service;
 
+import com.ecommerce.Auth.config.JWTService;
+import com.ecommerce.Auth.dto.AuthResponse;
 import com.ecommerce.Auth.dto.ListAllUserResponse;
 import com.ecommerce.Auth.dto.LoginRequest;
 import com.ecommerce.Auth.dto.RegisterResponse;
@@ -10,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
@@ -23,9 +26,12 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private ModelMapper modelMapper;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private JWTService jwtService;
 
     @Override
     public RegisterResponse registerUser(RegisterResponse registerResponse) {
@@ -33,7 +39,7 @@ public class UserServiceImpl implements UserService {
         log.info("Saving user to database");
        User registerUser = User.builder()
                .email(registerResponse.getEmail())
-               .password(registerResponse.getPassword())
+               .password(passwordEncoder.encode(registerResponse.getPassword()))
                .createdDate(new Date())
                .build();
        userRepository.save(registerUser);
@@ -42,15 +48,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean loginUser(LoginRequest loginRequest) {
-        Optional<User> fetchUserByEmail = userRepository.findByEmail(loginRequest.getEmail());
-        if (fetchUserByEmail.isEmpty()){
-            log.error(String.format("No uer found with email id %s", loginRequest.getEmail()));
-            return false;
+    public AuthResponse loginUser(LoginRequest loginRequest) {
+        System.out.println(loginRequest.getEmail());
+        User user = userRepository.findByEmail(loginRequest.getEmail()).orElseThrow();
+        if(user != null){
+            String token = jwtService.generateToken(user);
+            return AuthResponse.builder()
+                    .token(token)
+                    .build();
         }
-        log.info(String.format("User found %s", fetchUserByEmail));
-        return true;
-    }
+        else return null;
+    };
 
     @Override
     public List<ListAllUserResponse> listAllUsers() {

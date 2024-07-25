@@ -1,5 +1,6 @@
 package com.ecommerce.Auth.controller;
 
+import com.ecommerce.Auth.dto.AuthResponse;
 import com.ecommerce.Auth.dto.ListAllUserResponse;
 import com.ecommerce.Auth.dto.LoginRequest;
 import com.ecommerce.Auth.dto.RegisterResponse;
@@ -38,11 +39,7 @@ public class UserController {
         return ResponseEntity.ok().body(userService.registerUser(registerResponse));
     }
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody LoginRequest loginRequest){
-        boolean loginUser = userService.loginUser(loginRequest);
-        if (loginUser){
-            return ResponseEntity.ok().body(String.format("%s logged in", loginRequest.getEmail()));
-        }
-        return ResponseEntity.status(HttpStatusCode.valueOf(400)).body("Invalid credentials");
+    public ResponseEntity<AuthResponse> loginUser(@RequestBody LoginRequest loginRequest){
+        return ResponseEntity.ok().body(userService.loginUser(loginRequest));
     }
 }
