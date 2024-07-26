@@ -5,28 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d5d0169d-ef70-4c25-a853-6a5122879f14" name="Changes" comment="Fix mapping">
-      <change afterPath="$PROJECT_DIR$/auth/src/main/java/com/ecommerce/Auth/config/JWTService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/auth/src/main/java/com/ecommerce/Auth/config/SecurityConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/auth/src/main/java/com/ecommerce/Auth/dto/AuthResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/auth/target/classes/com/ecommerce/Auth/config/JWTService.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/auth/target/classes/com/ecommerce/Auth/config/SecurityConfig.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/auth/target/classes/com/ecommerce/Auth/dto/AuthResponse$AuthResponseBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/auth/target/classes/com/ecommerce/Auth/dto/AuthResponse.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/auth/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth/src/main/java/com/ecommerce/Auth/config/AppConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth/src/main/java/com/ecommerce/Auth/config/AppConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth/src/main/java/com/ecommerce/Auth/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth/src/main/java/com/ecommerce/Auth/controller/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth/src/main/java/com/ecommerce/Auth/model/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth/src/main/java/com/ecommerce/Auth/model/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth/src/main/java/com/ecommerce/Auth/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth/src/main/java/com/ecommerce/Auth/service/UserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth/src/main/java/com/ecommerce/Auth/service/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth/src/main/java/com/ecommerce/Auth/service/UserServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/auth/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth/target/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/auth/target/classes/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth/target/classes/com/ecommerce/Auth/config/AppConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/auth/target/classes/com/ecommerce/Auth/config/AppConfig.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth/target/classes/com/ecommerce/Auth/controller/UserController.class" beforeDir="false" afterPath="$PROJECT_DIR$/auth/target/classes/com/ecommerce/Auth/controller/UserController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth/target/classes/com/ecommerce/Auth/model/User$UserBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/auth/target/classes/com/ecommerce/Auth/model/User$UserBuilder.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth/target/classes/com/ecommerce/Auth/model/User.class" beforeDir="false" afterPath="$PROJECT_DIR$/auth/target/classes/com/ecommerce/Auth/model/User.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth/target/classes/com/ecommerce/Auth/service/UserService.class" beforeDir="false" afterPath="$PROJECT_DIR$/auth/target/classes/com/ecommerce/Auth/service/UserService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth/target/classes/com/ecommerce/Auth/service/UserServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/auth/target/classes/com/ecommerce/Auth/service/UserServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/product/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/src/main/java/com/ecommerce/Product/config/AppConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/product/src/main/java/com/ecommerce/Product/config/AppConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/product/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
