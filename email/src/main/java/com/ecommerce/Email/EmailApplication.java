@@ -2,7 +2,8 @@ package com.ecommerce.Email;
 
 import com.ecommerce.Email.dto.PaymentResponse;
 import com.ecommerce.Email.dto.ProductFetch;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -13,8 +14,9 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 @SpringBootApplication
-@Slf4j
 public class EmailApplication {
+
+	private static final Logger LOG = LoggerFactory.getLogger(EmailApplication.class);
 
 	@Autowired
 	private Environment environment;
@@ -23,18 +25,17 @@ public class EmailApplication {
 		SpringApplication.run(EmailApplication.class, args);
 	}
 
-
 	@KafkaListener(topics = "emailTopic")
 	public void	SendEmail(PaymentResponse paymentResponse){
-		log.info("Received event from payment service {}", paymentResponse);
-		log.info("Calling product service via webclient to fetch product details");
-		log.info("Active profile is : {}", environment.getActiveProfiles());
+		LOG.info("Received event from payment service {}", paymentResponse);
+		LOG.info("Calling product service via webclient to fetch product details");
+		LOG.info("Active profile is : {}", environment.getActiveProfiles());
 		String productBaseURL = environment.matchesProfiles("docker") ? "http://product:8080" : "http://localhost:8080";
 			WebClient webClient = WebClient.create(productBaseURL);
 			List<String> getProductIds = paymentResponse.getP_id();
 			for(String productId: getProductIds) {
 				Mono<ProductFetch> result= fetchProductDetails(webClient, productId);
-				log.info("Order Placed, Order number is: {} and list of products ordered: {}", paymentResponse.getOrderNumber(), result.block());
+				LOG.info("Order Placed, Order number is: {} and list of products ordered: {}", paymentResponse.getOrderNumber(), result.block());
 			}
 		}
 	private Mono<ProductFetch> fetchProductDetails(WebClient webClient, String productId) {

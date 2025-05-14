@@ -1,6 +1,7 @@
 package com.ecommerce.Product.config;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,14 +14,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@Slf4j
 public class webSecurityConfig {
+    private static final Logger LOG = LoggerFactory.getLogger(webSecurityConfig.class);
     @Autowired
     private JwtRequestFilter jwtRequestFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        log.info("configuring web security");
+        LOG.info("configuring web security");
         httpSecurity.
                 csrf(AbstractHttpConfigurer::disable).
                 authorizeHttpRequests(auth -> auth.requestMatchers(
