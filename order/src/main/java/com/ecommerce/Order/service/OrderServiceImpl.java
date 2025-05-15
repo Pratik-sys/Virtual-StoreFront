@@ -6,8 +6,9 @@ import com.ecommerce.Order.model.OrderListItems;
 import com.ecommerce.Order.repository.OrderRepository;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -23,8 +24,9 @@ import java.util.UUID;
 @Service
 @AllArgsConstructor
 @NoArgsConstructor
-@Slf4j
 public class OrderServiceImpl implements OrderService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(OrderServiceImpl.class);
 
     @Autowired
     private OrderRepository orderRepository;
@@ -51,7 +53,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private Order createOrder(OrderRequest orderRequest) {
-        log.info("Creating order...");
+        LOG.info("Creating order...");
         Order order = new Order();
         order.setOrderNumber(UUID.randomUUID().toString());
         List<OrderListItems> orderListItems = orderRequest.getOrderListDTOS().stream()
@@ -59,12 +61,12 @@ public class OrderServiceImpl implements OrderService {
                 .toList();
         order.setOrderListItems(orderListItems);
         order.setPaymentStatus("Pending");
-        log.info("order created successfully {}", order);
+        LOG.info("order created successfully {}", order);
         return order;
     }
 
     private BigDecimal calculateTotalAmount(List<OrderListItems> orderListItems) {
-        log.info("Calculating total amount");
+        LOG.info("Calculating total amount");
         return orderListItems.stream()
                 .map(OrderListItems::getPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -74,9 +76,9 @@ public class OrderServiceImpl implements OrderService {
         List<String> pIds = order.getOrderListItems().stream()
                 .map(OrderListItems::getP_id)
                 .toList();
-        log.info("Checking product availability for {}", pIds);
+        LOG.info("Checking product availability for {}", pIds);
         String inventoryBaseURL = environment.matchesProfiles("docker") ? "http://inventory:8084" : "http://localhost:8084";
-        log.info("Active Profile is {} and base URL is: {}", environment.getActiveProfiles(), inventoryBaseURL);
+        LOG.info("Active Profile is {} and base URL is: {}", environment.getActiveProfiles(), inventoryBaseURL);
         WebClient webClient = WebClient.create(inventoryBaseURL);
         OrderCheckStock[] orderCheckStocks = webClient
                 .get()
@@ -89,7 +91,7 @@ public class OrderServiceImpl implements OrderService {
         boolean allProductInStock = Arrays.stream(orderCheckStocks)
                 .allMatch(OrderCheckStock::is_inStock);
         if (!allProductInStock) {
-            log.error("Product is not in Stock, please try again later");
+            LOG.error("Product is not in Stock, please try again later");
             throw new IllegalArgumentException("Product is not in Stock, please try again later");
         }
 
@@ -106,7 +108,7 @@ public class OrderServiceImpl implements OrderService {
                 order.getTotalAmount()
         );
         kafkaTemplate.send("paymentTopic", orderEvent);
-        log.info("Sent order further for payment processing, {}", orderEvent);
+        LOG.info("Sent order further for payment processing, {}", orderEvent);
     }
 
     private String formatOrderConfirmation(Order order) {
@@ -122,15 +124,15 @@ public class OrderServiceImpl implements OrderService {
     }
     @KafkaListener(topics = "order-topic")
     public void updatePaymentStatus(HashMap<String, String> paymentResponse){
-        log.info("Received an event from payment service ---> {}", paymentResponse);
+        LOG.info("Received an event from payment service ---> {}", paymentResponse);
         Order order = orderRepository.findByOrderNumber(paymentResponse.get("orderNumber"));
         if (order == null){
-            log.error("No such order  with order number found {}", paymentResponse.get("orderNumber"));
+            LOG.error("No such order  with order number found {}", paymentResponse.get("orderNumber"));
             return;
         }
-        log.info("Setting Payment status to {}" , paymentResponse.get("paymentStatus"));
+        LOG.info("Setting Payment status to {}" , paymentResponse.get("paymentStatus"));
         order.setPaymentStatus(paymentResponse.get("paymentStatus"));
         orderRepository.save(order);
-        log.info("Payment set to {} for order number: {}",paymentResponse.get("paymentStatus"), paymentResponse.get("orderNumber"));
+        LOG.info("Payment set to {} for order number: {}",paymentResponse.get("paymentStatus"), paymentResponse.get("orderNumber"));
     }
 }

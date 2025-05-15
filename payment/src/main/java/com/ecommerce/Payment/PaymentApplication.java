@@ -17,6 +17,8 @@ import java.util.UUID;
 @Slf4j
 public class PaymentApplication {
 
+	private static final Logger  LOG = LoggerFactory.getLogger(PaymentApplication.class);
+
 	public static void main(String[] args) {
 		SpringApplication.run(PaymentApplication.class, args);
 
@@ -26,7 +28,7 @@ public class PaymentApplication {
 
 	@KafkaListener(topics = "paymentTopic")
 	public void receiveOrder(OrderPaymentResponse orderPaymentResponse){
-		log.info("Received and event from order service {}", orderPaymentResponse);
+		LOG.info("Received and event from order service {}", orderPaymentResponse);
 		Payment payment = Payment.builder()
 				.paymentId(UUID.randomUUID().toString())
 				.totalAmount(orderPaymentResponse.getTotalAmount())
@@ -34,7 +36,7 @@ public class PaymentApplication {
 				.p_id(orderPaymentResponse.getP_id())
 				.orderNumber(orderPaymentResponse.getOrderNumber())
 				.build();
-		log.info("Building payment instance and saving it to database {}", payment);
+		LOG.info("Building payment instance and saving it to database {}", payment);
 		paymentRepository.save(payment);
 	}
 }
