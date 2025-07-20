@@ -19,7 +19,12 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.
                 csrf(AbstractHttpConfigurer::disable).
-                authorizeHttpRequests(auth -> auth.requestMatchers("/api/v1/auth/signup", "/api/v1/auth/login","api/v1/auth/delete-user/*", "api/v1/auth/fetch-all")
+                authorizeHttpRequests(auth -> auth.requestMatchers("/api/v1/auth/signup",
+                                "/api/v1/auth/login",
+                                "api/v1/auth/delete-user/*",
+                                "api/v1/auth/fetch-all",
+                                "/swagger*/**",
+                                "/v3/api-docs/**")
                         .permitAll()
                         .anyRequest()
                         .authenticated()

@@ -25,7 +25,9 @@ public class webSecurityConfig {
         httpSecurity.
                 csrf(AbstractHttpConfigurer::disable).
                 authorizeHttpRequests(auth -> auth.requestMatchers(
-                        "/api/product/")
+                        "/api/product/",
+                                "/swagger*/**",
+                                "/v3/api-docs/**")
                         .permitAll()
                         .anyRequest()
                         .authenticated()
